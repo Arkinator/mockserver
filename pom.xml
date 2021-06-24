@@ -4,7 +4,7 @@
 
     <groupId>io.github.arkinator</groupId>
     <artifactId>mockserver</artifactId>
-    <version>5.11.3-SNAPSHOT</version>
+    <version>5.11.3</version>
     <packaging>pom</packaging>
 
     <name>MockServer</name>

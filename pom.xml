@@ -68,6 +68,8 @@
         <skipAssembly>false</skipAssembly>
         <release.arguments />
         <javadoc.additional.parameters />
+        <additionalparam>-Xdoclint:none</additionalparam>
+        <doclint>none</doclint>
     </properties>
 
     <modules>
@@ -484,6 +486,7 @@
             </activation>
             <properties>
                 <additionalparam>-Xdoclint:none</additionalparam>
+                <doclint>none</doclint>
             </properties>
         </profile>
         <profile>
@@ -529,6 +532,8 @@
                                 <configuration>
                                     <reportOutputDirectory>${basedir}/jekyll-www.mock-server.com/_site</reportOutputDirectory>
                                     <destDir>apidocs</destDir>
+                                    <doclint>none</doclint>
+                                    <failOnError>false</failOnError>
                                 </configuration>
                             </execution>
                         </executions>

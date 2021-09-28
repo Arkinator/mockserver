@@ -12,7 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -264,4 +266,11 @@ public class JDKKeyAndCertificateFactory implements KeyAndCertificateFactory {
         }
     }
 
+    @Override
+    public List<X509Certificate> certificateChain() {
+        final List<X509Certificate> result = new ArrayList<>();
+        result.add(x509Certificate());
+        result.add(certificateAuthorityX509Certificate());
+        return result;
+    }
 }

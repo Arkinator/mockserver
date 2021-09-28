@@ -383,4 +383,12 @@ public class BCKeyAndCertificateFactory implements KeyAndCertificateFactory {
             return x509Certificate;
         }
     }
+
+    @Override
+    public List<X509Certificate> certificateChain() {
+        final List<X509Certificate> result = new ArrayList<>();
+        result.add(x509Certificate());
+        result.add(certificateAuthorityX509Certificate());
+        return result;
+    }
 }

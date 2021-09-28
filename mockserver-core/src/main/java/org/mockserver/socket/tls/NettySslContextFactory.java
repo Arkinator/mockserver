@@ -145,8 +145,7 @@ public class NettySslContextFactory {
                 serverSslContext = SslContextBuilder
                     .forServer(
                         keyAndCertificateFactory.privateKey(),
-                        keyAndCertificateFactory.x509Certificate(),
-                        keyAndCertificateFactory.certificateAuthorityX509Certificate()
+                        keyAndCertificateFactory.certificateChain()
                     )
                     .trustManager(trustCertificateChain())
                     .clientAuth(ConfigurationProperties.tlsMutualAuthenticationRequired() ? ClientAuth.REQUIRE : ClientAuth.NONE)

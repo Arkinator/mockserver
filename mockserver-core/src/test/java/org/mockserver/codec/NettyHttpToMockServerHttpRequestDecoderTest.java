@@ -1,6 +1,8 @@
 package org.mockserver.codec;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
@@ -10,6 +12,7 @@ import org.junit.Test;
 import org.mockserver.logging.MockServerLogger;
 import org.mockserver.model.*;
 
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockserver.model.BinaryBody.binary;
 import static org.mockserver.model.Cookie.cookie;
 import static org.mockserver.model.Header.header;
@@ -329,4 +334,21 @@ public class NettyHttpToMockServerHttpRequestDecoderTest {
         assertThat(body, is(binary("some_random_bytes".getBytes(UTF_8), MediaType.JPEG)));
     }
 
+    @Test
+    public void shouldSetClientIdCorrectly() {
+        // given
+        fullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.OPTIONS, "/uri");
+        final ChannelHandlerContext context = mock(ChannelHandlerContext.class);
+        final Channel channel = mock(Channel.class);
+        doReturn(channel).when(context).channel();
+        doReturn(new InetSocketAddress("localhost", 12345)).when(channel).remoteAddress();
+
+        // when
+        mockServerRequestDecoder.decode(context, fullHttpRequest, output);
+
+        // then
+        SocketAddress clientAddress = ((HttpRequest) output.get(0)).getClientAddress();
+        assertThat(clientAddress.getPort(), is(12345));
+        assertThat(clientAddress.getHost(), is("localhost"));
+    }
 }

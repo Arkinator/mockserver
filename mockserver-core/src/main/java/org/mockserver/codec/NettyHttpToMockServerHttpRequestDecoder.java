@@ -5,7 +5,9 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import org.mockserver.logging.MockServerLogger;
 import org.mockserver.mappers.FullHttpRequestToMockServerHttpRequest;
+import org.mockserver.model.HttpRequest;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
@@ -21,7 +23,13 @@ public class NettyHttpToMockServerHttpRequestDecoder extends MessageToMessageDec
 
     @Override
     protected void decode(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest, List<Object> out) {
-        out.add(fullHttpRequestToMockServerRequest.mapFullHttpRequestToMockServerRequest(fullHttpRequest));
+        final HttpRequest httpRequest = fullHttpRequestToMockServerRequest.mapFullHttpRequestToMockServerRequest(fullHttpRequest);
+        if (ctx.channel().remoteAddress() instanceof InetSocketAddress) {
+            httpRequest.withClientAddress(org.mockserver.model.SocketAddress.socketAddress()
+                .withHost(((InetSocketAddress) ctx.channel().remoteAddress()).getHostName())
+                .withPort(((InetSocketAddress) ctx.channel().remoteAddress()).getPort()));
+        }
+        out.add(httpRequest);
     }
 
 }

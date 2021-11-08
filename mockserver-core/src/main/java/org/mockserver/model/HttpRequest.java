@@ -35,6 +35,7 @@ public class HttpRequest extends RequestDefinition implements HttpMessage<HttpRe
     private Boolean keepAlive = null;
     private Boolean secure = null;
     private SocketAddress socketAddress;
+    private SocketAddress clientAddress;
 
     public static HttpRequest request() {
         return new HttpRequest();
@@ -86,6 +87,21 @@ public class HttpRequest extends RequestDefinition implements HttpMessage<HttpRe
      */
     public HttpRequest withSocketAddress(SocketAddress socketAddress) {
         this.socketAddress = socketAddress;
+        this.hashCode = 0;
+        return this;
+    }
+
+    public SocketAddress getClientAddress() {
+        return clientAddress;
+    }
+
+    /**
+     * Specify client address
+     *
+     * @param socketAddress the client address that send the request
+     */
+    public HttpRequest withClientAddress(SocketAddress clientAddress) {
+        this.clientAddress = clientAddress;
         this.hashCode = 0;
         return this;
     }

@@ -21,7 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.mockserver.socket.tls.KeyAndCertificateFactoryFactory.createKeyAndCertificateFactory;
@@ -35,6 +37,8 @@ public class NettySslContextFactory {
 
     public static Consumer<NettySslContextFactory> nettySslContextFactoryCustomizer = factory -> {
     };
+    public static UnaryOperator<SslContextBuilder> sslServerContextBuilderCustomizer = UnaryOperator.identity();
+    public static UnaryOperator<SslContextBuilder> sslClientContextBuilderCustomizer = UnaryOperator.identity();
 
     private final MockServerLogger mockServerLogger;
     private final KeyAndCertificateFactory keyAndCertificateFactory;
@@ -84,7 +88,8 @@ public class NettySslContextFactory {
                 } else {
                     sslContextBuilder.trustManager(trustCertificateChain());
                 }
-                clientSslContext = sslContextBuilder.build();
+                clientSslContext = sslClientContextBuilderCustomizer
+                    .apply(sslContextBuilder).build();
                 ConfigurationProperties.rebuildTLSContext(false);
             } catch (Throwable throwable) {
                 throw new RuntimeException("Exception creating SSL context for client", throwable);
@@ -142,13 +147,15 @@ public class NettySslContextFactory {
             || ConfigurationProperties.rebuildServerTLSContext() && !ConfigurationProperties.preventCertificateDynamicUpdate()) {
             try {
                 keyAndCertificateFactory.buildAndSavePrivateKeyAndX509Certificate();
-                serverSslContext = SslContextBuilder
+                final SslContextBuilder sslContextBuilder = SslContextBuilder
                     .forServer(
                         keyAndCertificateFactory.privateKey(),
                         keyAndCertificateFactory.certificateChain()
                     )
                     .trustManager(trustCertificateChain())
-                    .clientAuth(ConfigurationProperties.tlsMutualAuthenticationRequired() ? ClientAuth.REQUIRE : ClientAuth.NONE)
+                    .clientAuth(ConfigurationProperties.tlsMutualAuthenticationRequired() ? ClientAuth.REQUIRE : ClientAuth.NONE);
+                serverSslContext = sslServerContextBuilderCustomizer
+                    .apply(sslContextBuilder)
                     .build();
                 ConfigurationProperties.rebuildServerTLSContext(false);
             } catch (Throwable throwable) {

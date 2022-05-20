@@ -6,18 +6,22 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.event.Level;
 import org.mockserver.client.NettyHttpClient;
 import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.log.model.LogEntry;
 import org.mockserver.logging.MockServerLogger;
+import org.mockserver.model.BinaryExchangeDescriptor;
 import org.mockserver.model.BinaryMessage;
 import org.mockserver.scheduler.Scheduler;
 import org.mockserver.uuid.UUIDService;
-import org.slf4j.event.Level;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.mockserver.configuration.ConfigurationProperties.maxFutureTimeout;
@@ -35,6 +39,8 @@ import static org.mockserver.netty.unification.PortUnificationHandler.isSslEnabl
  */
 @ChannelHandler.Sharable
 public class BinaryHandler extends SimpleChannelInboundHandler<ByteBuf> {
+
+    public static Consumer<BinaryExchangeDescriptor> binaryExchangeCallback = data -> {};
 
     private MockServerLogger mockServerLogger;
     private final Scheduler scheduler;
@@ -61,6 +67,7 @@ public class BinaryHandler extends SimpleChannelInboundHandler<ByteBuf> {
         );
         final InetSocketAddress remoteAddress = getRemoteAddress(ctx);
         if (remoteAddress != null) {
+            final LocalDateTime requestStart = LocalDateTime.now();
             boolean synchronous = true;
             CompletableFuture<BinaryMessage> binaryResponseFuture = httpClient.sendRequest(binaryRequest, isSslEnabledUpstream(ctx.channel()), remoteAddress, ConfigurationProperties.socketConnectionTimeout());
             scheduler.submit(binaryResponseFuture, () -> {
@@ -74,6 +81,10 @@ public class BinaryHandler extends SimpleChannelInboundHandler<ByteBuf> {
                             .setMessageFormat("returning binary response:{}from:{}for forwarded binary request:{}")
                             .setArguments(formatBytes(binaryResponse.getBytes()), remoteAddress, formatBytes(binaryRequest.getBytes()))
                     );
+                    LocalDateTime requestEnd = LocalDateTime.now();
+                    binaryExchangeCallback.accept(new BinaryExchangeDescriptor(binaryRequest, binaryResponse,
+                        requestStart, requestEnd,
+                        remoteAddress, convertSocketAddress(ctx.channel().remoteAddress())));
                     ctx.writeAndFlush(Unpooled.copiedBuffer(binaryResponse.getBytes()));
                 } catch (Throwable throwable) {
                     if (MockServerLogger.isEnabled(Level.WARN)) {
@@ -101,6 +112,14 @@ public class BinaryHandler extends SimpleChannelInboundHandler<ByteBuf> {
             }
             ctx.writeAndFlush(Unpooled.copiedBuffer("unknown message format".getBytes(StandardCharsets.UTF_8)));
             ctx.close();
+        }
+    }
+
+    private InetSocketAddress convertSocketAddress(SocketAddress remoteAddress) {
+        if (remoteAddress instanceof InetSocketAddress) {
+            return (InetSocketAddress) remoteAddress;
+        } else {
+            return null;
         }
     }
 

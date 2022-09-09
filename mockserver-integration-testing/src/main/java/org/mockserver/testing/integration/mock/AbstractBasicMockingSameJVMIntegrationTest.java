@@ -11,6 +11,8 @@ import org.mockserver.testing.integration.callback.PrecannedTestExpectationRespo
 import org.mockserver.uuid.UUIDService;
 import org.mockserver.verify.VerificationTimes;
 
+import java.nio.charset.StandardCharsets;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static junit.framework.TestCase.assertEquals;
@@ -24,6 +26,7 @@ import static org.mockserver.matchers.Times.exactly;
 import static org.mockserver.matchers.Times.once;
 import static org.mockserver.mock.Expectation.when;
 import static org.mockserver.mock.OpenAPIExpectation.openAPIExpectation;
+import static org.mockserver.model.BinaryBody.binary;
 import static org.mockserver.model.Header.header;
 import static org.mockserver.model.HttpClassCallback.callback;
 import static org.mockserver.model.HttpForward.forward;
@@ -33,6 +36,7 @@ import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.HttpStatusCode.*;
 import static org.mockserver.model.JsonBody.json;
 import static org.mockserver.model.OpenAPIDefinition.openAPI;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 
 /**
  * @author jamesdbloom
@@ -72,6 +76,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
             response()
                 .withStatusCode(ACCEPTED_202.code())
                 .withReasonPhrase(ACCEPTED_202.reasonPhrase())
+                .withContentType(DEFAULT_CONTENT_TYPE)
                 .withHeaders(
                     header("x-callback", "test_callback_header")
                 )
@@ -254,7 +259,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                 .withHeaders(
                     header("x-test", "test_headers_and_body")
                 )
-                .withBody("some_overridden_body"),
+                .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8))),
             makeRequest(
                 request()
                     .withPath(calculatePath("echo"))
@@ -263,7 +268,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                         header("x-test", "test_headers_and_body"),
                         header("x-echo-server-port", insecureEchoServer.getPort())
                     )
-                    .withBody("an_example_body_http"),
+                    .withBody(binary("an_example_body_http".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );
@@ -287,7 +292,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                 .withHeaders(
                     header("x-test", "test_headers_and_body")
                 )
-                .withBody("some_overridden_body"),
+                .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8))),
             makeRequest(
                 request()
                     .withSecure(true)
@@ -297,7 +302,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                         header("x-test", "test_headers_and_body"),
                         header("x-echo-server-port", secureEchoServer.getPort())
                     )
-                    .withBody("an_example_body_https"),
+                    .withBody(binary("an_example_body_https".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );
@@ -326,7 +331,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                     header("x-response-test", "x-response-test"),
                     header("x-test", "test_headers_and_body")
                 )
-                .withBody("some_overidden_response_body"),
+                .withBody(binary("some_overidden_response_body".getBytes(StandardCharsets.UTF_8))),
             makeRequest(
                 request()
                     .withPath(calculatePath("echo"))
@@ -335,7 +340,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                         header("x-test", "test_headers_and_body"),
                         header("x-echo-server-port", insecureEchoServer.getPort())
                     )
-                    .withBody("an_example_body_http"),
+                    .withBody(binary("an_example_body_http".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );
@@ -360,7 +365,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                     header("x-response-test", "x-response-test"),
                     header("x-test", "test_headers_and_body")
                 )
-                .withBody("some_overidden_response_body"),
+                .withBody(binary("some_overidden_response_body".getBytes(StandardCharsets.UTF_8))),
             makeRequest(
                 request()
                     .withSecure(true)
@@ -370,7 +375,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                         header("x-test", "test_headers_and_body"),
                         header("x-echo-server-port", secureEchoServer.getPort())
                     )
-                    .withBody("an_example_body_https"),
+                    .withBody(binary("an_example_body_https".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );
@@ -398,7 +403,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
             )
             .respond(
                 response()
-                    .withBody("some_body")
+                    .withBody(binary("some_body".getBytes(StandardCharsets.UTF_8)))
             );
 
         // then
@@ -410,7 +415,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                 .withHeaders(
                     header("x-test", "test_headers_and_body")
                 )
-                .withBody("an_example_body"),
+                .withBody(binary("an_example_body".getBytes(StandardCharsets.UTF_8))),
             makeRequest(
                 request()
                     .withPath(calculatePath("echo"))
@@ -418,7 +423,7 @@ public abstract class AbstractBasicMockingSameJVMIntegrationTest extends Abstrac
                     .withHeaders(
                         header("x-test", "test_headers_and_body")
                     )
-                    .withBody("an_example_body"),
+                    .withBody(binary("an_example_body".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );

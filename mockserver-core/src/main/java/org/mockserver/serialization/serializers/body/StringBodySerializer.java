@@ -7,6 +7,8 @@ import org.mockserver.model.StringBody;
 
 import java.io.IOException;
 
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
+
 /**
  * @author jamesdbloom
  */
@@ -24,8 +26,8 @@ public class StringBodySerializer extends StdSerializer<StringBody> {
         boolean notFieldSetAndNotDefault = stringBody.getNot() != null && stringBody.getNot();
         boolean optionalFieldSetAndNotDefault = stringBody.getOptional() != null && stringBody.getOptional();
         boolean subStringFieldNotDefault = stringBody.isSubString();
-        boolean contentTypeFieldSet = stringBody.getContentType() != null;
-        if (serialiseDefaultValues || notFieldSetAndNotDefault || optionalFieldSetAndNotDefault || contentTypeFieldSet || subStringFieldNotDefault) {
+        boolean contentTypeFieldSetAndNotDefault = stringBody.getContentType() != null && !stringBody.getContentType().equals(DEFAULT_CONTENT_TYPE.toString());
+        if (serialiseDefaultValues || notFieldSetAndNotDefault || optionalFieldSetAndNotDefault || contentTypeFieldSetAndNotDefault || subStringFieldNotDefault) {
             jgen.writeStartObject();
             if (notFieldSetAndNotDefault) {
                 jgen.writeBooleanField("not", true);
@@ -38,7 +40,7 @@ public class StringBodySerializer extends StdSerializer<StringBody> {
             if (subStringFieldNotDefault) {
                 jgen.writeBooleanField("subString", true);
             }
-            if (contentTypeFieldSet) {
+            if (contentTypeFieldSetAndNotDefault) {
                 jgen.writeStringField("contentType", stringBody.getContentType());
             }
             jgen.writeEndObject();

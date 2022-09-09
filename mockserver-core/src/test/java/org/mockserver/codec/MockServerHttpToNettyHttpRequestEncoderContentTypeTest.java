@@ -17,6 +17,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockserver.model.BinaryBody.binary;
@@ -27,6 +28,7 @@ import static org.mockserver.model.MediaType.DEFAULT_TEXT_HTTP_CHARACTER_SET;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.ParameterBody.params;
 import static org.mockserver.model.RegexBody.regex;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 import static org.mockserver.model.StringBody.exact;
 import static org.mockserver.model.XmlBody.xml;
 
@@ -204,7 +206,7 @@ public class MockServerHttpToNettyHttpRequestEncoderContentTypeTest {
 
         // then
         FullHttpRequest fullHttpResponse = (FullHttpRequest) output.get(0);
-        assertThat(fullHttpResponse.headers().getAll("Content-Type"), empty());
+        assertThat(fullHttpResponse.headers().getAll("Content-Type"), hasItems(DEFAULT_CONTENT_TYPE.toString()));
     }
 
     @Test

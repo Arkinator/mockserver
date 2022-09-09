@@ -11,10 +11,14 @@ import org.mockserver.model.MediaType;
 import org.mockserver.serialization.PortBindingSerializer;
 import org.mockserver.testing.integration.mock.AbstractExtendedSameJVMMockingIntegrationTest;
 
+import java.nio.charset.StandardCharsets;
+
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertArrayEquals;
 import static org.mockserver.matchers.Times.once;
+import static org.mockserver.model.BinaryBody.binary;
 import static org.mockserver.model.ConnectionOptions.connectionOptions;
 import static org.mockserver.model.Cookie.cookie;
 import static org.mockserver.model.Header.header;
@@ -27,6 +31,7 @@ import static org.mockserver.model.HttpStatusCode.OK_200;
 import static org.mockserver.model.JsonBody.json;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.PortBinding.portBinding;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 
 /**
  * @author jamesdbloom
@@ -377,6 +382,7 @@ public abstract class AbstractExtendedDeployableWARMockingIntegrationTest extend
                 .withHeaders(
                     header("x-callback", "test_callback_header_response")
                 )
+                .withContentType(DEFAULT_CONTENT_TYPE)
                 .withBody("a_callback_forward_response"),
             makeRequest(
                 request()
@@ -385,6 +391,7 @@ public abstract class AbstractExtendedDeployableWARMockingIntegrationTest extend
                     .withHeaders(
                         header("X-Test", "test_headers_and_body")
                     )
+                    .withContentType(DEFAULT_CONTENT_TYPE)
                     .withBody("an_example_body_http"),
                 getHeadersToRemove()
             )
@@ -401,7 +408,7 @@ public abstract class AbstractExtendedDeployableWARMockingIntegrationTest extend
                 .withHeaders(
                     header("x-callback", "test_callback_header_response")
                 )
-                .withBody("a_callback_forward_response"),
+                .withBody(binary("a_callback_forward_response".getBytes(StandardCharsets.UTF_8))),
             makeRequest(
                 request()
                     .withSecure(true)
@@ -410,13 +417,13 @@ public abstract class AbstractExtendedDeployableWARMockingIntegrationTest extend
                     .withHeaders(
                         header("X-Test", "test_headers_and_body")
                     )
-                    .withBody("an_example_body_http"),
+                    .withBody(binary("an_example_body_http".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );
         assertEquals(TestClasspathTestExpectationForwardCallbackWithResponseOverride.httpRequests.get(0).getPath().getValue(), calculatePath("callback"));
-        assertEquals(TestClasspathTestExpectationForwardCallbackWithResponseOverride.httpRequests.get(0).getBody().getValue(), "an_example_body_http");
-        assertEquals(TestClasspathTestExpectationForwardCallbackWithResponseOverride.httpResponses.get(0).getBody().getValue(), "a_callback_forward_request");
+        assertArrayEquals(TestClasspathTestExpectationForwardCallbackWithResponseOverride.httpRequests.get(0).getBody().getRawBytes(), "an_example_body_http".getBytes(StandardCharsets.UTF_8));
+        assertArrayEquals(TestClasspathTestExpectationForwardCallbackWithResponseOverride.httpResponses.get(0).getBody().getRawBytes(), "a_callback_forward_request".getBytes(StandardCharsets.UTF_8));
     }
 
     @Test

@@ -13,8 +13,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.mockserver.model.MediaType.DEFAULT_TEXT_HTTP_CHARACTER_SET;
 import static org.mockserver.model.MediaType.PLAIN_TEXT_UTF_8;
-import static org.mockserver.model.StringBody.exact;
-import static org.mockserver.model.StringBody.subString;
+import static org.mockserver.model.StringBody.*;
 
 /**
  * @author jamesdbloom
@@ -30,7 +29,7 @@ public class StringBodyDTOTest {
         assertThat(stringBody.getString(), is("some_body"));
         assertThat(stringBody.isSubString(), is(false));
         assertThat(stringBody.getType(), is(Body.Type.STRING));
-        assertThat(stringBody.getContentType(), nullValue());
+        assertThat(stringBody.getContentType(), is(DEFAULT_CONTENT_TYPE.toString()));
         assertThat(stringBody.getRawBytes(), is("some_body".getBytes(StandardCharsets.UTF_8)));
     }
 
@@ -180,7 +179,7 @@ public class StringBodyDTOTest {
 
     @Test
     public void shouldReturnCorrectObjectFromStaticExactBuilder() {
-        assertThat(exact("some_body"), is(new StringBody("some_body", null, false, null)));
+        assertThat(exact("some_body"), is(new StringBody("some_body", null, false, DEFAULT_CONTENT_TYPE)));
         assertThat(exact("some_body"), is(new StringBody("some_body")));
         assertThat(exact("some_body", StandardCharsets.UTF_16), is(new StringBody("some_body", null, false, MediaType.create("text", "plain").withCharset(StandardCharsets.UTF_16))));
         assertThat(exact("some_body", StandardCharsets.UTF_16), is(new StringBody("some_body", StandardCharsets.UTF_16)));

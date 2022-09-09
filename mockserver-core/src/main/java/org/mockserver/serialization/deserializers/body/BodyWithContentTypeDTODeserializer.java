@@ -187,7 +187,7 @@ public class BodyWithContentTypeDTODeserializer extends StdDeserializer<BodyWith
                             result = new StringBodyDTO(new StringBody(valueJsonValue, rawBytes, false, StringBody.DEFAULT_CONTENT_TYPE.withCharset(charset)), not);
                             break;
                         } else {
-                            result = new StringBodyDTO(new StringBody(valueJsonValue, rawBytes, false, null), not);
+                            result = new StringBodyDTO(new StringBody(valueJsonValue, rawBytes, false, StringBody.DEFAULT_CONTENT_TYPE), not);
                             break;
                         }
                     case XML:

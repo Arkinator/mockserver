@@ -285,7 +285,7 @@ public class BodyDTODeserializer extends StdDeserializer<BodyDTO> {
                             result = new StringBodyDTO(new StringBody(valueJsonValue, rawBytes, subString, StringBody.DEFAULT_CONTENT_TYPE.withCharset(charset)), not);
                             break;
                         } else {
-                            result = new StringBodyDTO(new StringBody(valueJsonValue, rawBytes, subString, null), not);
+                            result = new StringBodyDTO(new StringBody(valueJsonValue, rawBytes, subString, StringBody.DEFAULT_CONTENT_TYPE), not);
                             break;
                         }
                     case XML:

@@ -20,7 +20,7 @@ public class StringBody extends BodyWithContentType<String> {
     private final byte[] rawBytes;
 
     public StringBody(String value) {
-        this(value, null, false, null);
+        this(value, null, false, DEFAULT_CONTENT_TYPE);
     }
 
     public StringBody(String value, Charset charset) {

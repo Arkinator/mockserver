@@ -10,8 +10,7 @@ import static junit.framework.TestCase.assertNotSame;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.mockserver.model.StringBody.exact;
-import static org.mockserver.model.StringBody.subString;
+import static org.mockserver.model.StringBody.*;
 
 /**
  * @author jamesdbloom
@@ -34,7 +33,7 @@ public class StringBodyTest {
         assertThat(stringBody.getType(), is(Body.Type.STRING));
         assertThat(stringBody.getCharset(null), nullValue());
         assertThat(stringBody.getCharset(StandardCharsets.UTF_8), is(StandardCharsets.UTF_8));
-        assertThat(stringBody.getContentType(), nullValue());
+        assertThat(stringBody.getContentType(), is(DEFAULT_CONTENT_TYPE.toString()));
     }
 
     @Test
@@ -73,7 +72,7 @@ public class StringBodyTest {
         assertThat(stringBody.getType(), is(Body.Type.STRING));
         assertThat(stringBody.getCharset(null), nullValue());
         assertThat(stringBody.getCharset(StandardCharsets.UTF_8), is(StandardCharsets.UTF_8));
-        assertThat(stringBody.getContentType(), nullValue());
+        assertThat(stringBody.getContentType(), is(DEFAULT_CONTENT_TYPE.toString()));
     }
 
     @Test

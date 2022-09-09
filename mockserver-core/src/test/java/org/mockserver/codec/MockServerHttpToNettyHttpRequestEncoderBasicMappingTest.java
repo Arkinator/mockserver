@@ -29,6 +29,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockserver.model.BinaryBody.binary;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.Parameter.param;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 import static org.mockserver.model.StringBody.exact;
 import static org.mockserver.proxyconfiguration.ProxyConfiguration.proxyConfiguration;
 
@@ -259,7 +260,7 @@ public class MockServerHttpToNettyHttpRequestEncoderBasicMappingTest {
         // then
         FullHttpRequest fullHttpRequest = (FullHttpRequest) output.get(0);
         assertThat(fullHttpRequest.content().toString(StandardCharsets.UTF_8), is("somebody"));
-        assertThat(fullHttpRequest.headers().get(CONTENT_TYPE), nullValue());
+        assertThat(fullHttpRequest.headers().get(CONTENT_TYPE), is(DEFAULT_CONTENT_TYPE.toString()));
     }
 
     @Test

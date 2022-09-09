@@ -6,10 +6,12 @@ import org.mockserver.model.HttpTemplate;
 import org.mockserver.testing.integration.callback.StaticTestExpectationResponseCallback;
 
 import javax.script.ScriptEngineManager;
+import java.nio.charset.StandardCharsets;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockserver.character.Character.NEW_LINE;
+import static org.mockserver.model.BinaryBody.binary;
 import static org.mockserver.model.Header.header;
 import static org.mockserver.model.HttpClassCallback.callback;
 import static org.mockserver.model.HttpRequest.request;
@@ -17,6 +19,7 @@ import static org.mockserver.model.HttpResponse.notFoundResponse;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.HttpStatusCode.OK_200;
 import static org.mockserver.model.HttpTemplate.template;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 
 /**
  * @author jamesdbloom
@@ -135,6 +138,7 @@ public abstract class AbstractExtendedSameJVMMockingIntegrationTest extends Abst
                     request()
                         .withPath(calculatePath("some_path"))
                         .withCookie("name", "value")
+                        .withContentType(DEFAULT_CONTENT_TYPE)
                         .withBody("some_request_body"),
                     getHeadersToRemove()
                 )
@@ -152,7 +156,7 @@ public abstract class AbstractExtendedSameJVMMockingIntegrationTest extends Abst
                         .withSecure(true)
                         .withPath(calculatePath("some_path"))
                         .withCookie("name", "value")
-                        .withBody("some_request_body"),
+                        .withBody(binary("some_request_body".getBytes(StandardCharsets.UTF_8))),
                     getHeadersToRemove()
                 )
             );
@@ -167,7 +171,7 @@ public abstract class AbstractExtendedSameJVMMockingIntegrationTest extends Abst
                     request()
                         .withPath(calculatePath("some_path"))
                         .withCookie("name", "value")
-                        .withBody("some_request_body"),
+                        .withBody(binary("some_request_body".getBytes(StandardCharsets.UTF_8))),
                     getHeadersToRemove()
                 )
             );
@@ -179,7 +183,7 @@ public abstract class AbstractExtendedSameJVMMockingIntegrationTest extends Abst
                         .withSecure(true)
                         .withPath(calculatePath("some_path"))
                         .withCookie("name", "value")
-                        .withBody("some_request_body"),
+                        .withBody(binary("some_request_body".getBytes(StandardCharsets.UTF_8))),
                     getHeadersToRemove()
                 )
             );

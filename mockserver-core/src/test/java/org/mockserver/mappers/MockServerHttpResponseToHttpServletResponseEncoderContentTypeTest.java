@@ -16,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.JsonBody.json;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 import static org.mockserver.model.StringBody.exact;
 import static org.mockserver.model.XmlBody.xml;
 
@@ -73,7 +74,7 @@ public class MockServerHttpResponseToHttpServletResponseEncoderContentTypeTest {
         new MockServerHttpResponseToHttpServletResponseEncoder(new MockServerLogger()).mapMockServerResponseToHttpServletResponse(httpResponse, httpServletResponse);
 
         // then
-        assertThat(httpServletResponse.getHeader("Content-Type"), nullValue());
+        assertThat(httpServletResponse.getHeader("Content-Type"), is(DEFAULT_CONTENT_TYPE.toString()));
     }
 
     @Test

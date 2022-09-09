@@ -2,13 +2,15 @@ package org.mockserver.httpclient.netty;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import org.apache.commons.lang3.RandomUtils;
+import org.bouncycastle.pqc.math.linearalgebra.RandUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockserver.httpclient.NettyHttpClient;
 import org.mockserver.echo.http.EchoServer;
+import org.mockserver.httpclient.NettyHttpClient;
 import org.mockserver.logging.MockServerLogger;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
@@ -160,11 +162,12 @@ public class NettyHttpClientTest {
     }
 
     @Test
-    public void shouldSendComplexRequestWithStringBodyAndNotContentType() throws Exception {
+    public void shouldSendComplexRequestWithBinaryBodyAndNotContentType() throws Exception {
         // given
         NettyHttpClient nettyHttpClient = new NettyHttpClient(configuration(), mockServerLogger, clientEventLoopGroup, null, false);
 
         // when
+        final byte[] complexBody = RandomUtils.nextBytes(200);
         HttpResponse httpResponse = nettyHttpClient.sendRequest(
             request()
                 .withHeader("Host", "0.0.0.0:" + echoServer.getPort())
@@ -172,7 +175,7 @@ public class NettyHttpClientTest {
                 .withHeader(header("another_header_name", "first_header_value", "second_header_value"))
                 .withCookie(cookie("some_cookie_name", "some_cookie_value"))
                 .withCookie(cookie("another_cookie_name", "another_cookie_value"))
-                .withBody(exact("this is an example body"))
+                .withBody(binary(complexBody))
         ).get(10, TimeUnit.HOURS);
 
         // then
@@ -181,7 +184,7 @@ public class NettyHttpClientTest {
                 .withStatusCode(200)
                 .withReasonPhrase("OK")
                 .withHeader(header(HOST.toString(), "0.0.0.0:" + echoServer.getPort()))
-                .withHeader(header(CONTENT_LENGTH.toString(), "this is an example body".length()))
+                .withHeader(header(CONTENT_LENGTH.toString(), complexBody.length))
                 .withHeader(header(ACCEPT_ENCODING.toString(), GZIP.toString() + "," + DEFLATE.toString()))
                 .withHeader(header(CONNECTION.toString(), KEEP_ALIVE.toString()))
                 .withHeader(header(COOKIE.toString(), "some_cookie_name=some_cookie_value; another_cookie_name=another_cookie_value"))
@@ -189,7 +192,7 @@ public class NettyHttpClientTest {
                 .withHeader(header("another_header_name", "first_header_value", "second_header_value"))
                 .withCookie(cookie("some_cookie_name", "some_cookie_value"))
                 .withCookie(cookie("another_cookie_name", "another_cookie_value"))
-                .withBody(binary("this is an example body".getBytes(UTF_8), MediaType.parse("")))
+                .withBody(binary(complexBody))
         ));
     }
 

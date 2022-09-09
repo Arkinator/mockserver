@@ -122,7 +122,7 @@ public class BodyDecoderEncoderTest {
         BodyWithContentType result = new BodyDecoderEncoder().byteBufToBody(byteBuf, null);
 
         // then
-        assertThat(result, is(binary("bytes".getBytes(UTF_8), MediaType.parse(""))));
+        assertThat(result, is(binary("bytes".getBytes(UTF_8))));
     }
 
     @Test

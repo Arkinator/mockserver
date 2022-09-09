@@ -98,10 +98,10 @@ public class BodyDecoderEncoder {
                     new String(bodyBytes, mediaType.getCharsetOrDefault()),
                     bodyBytes,
                     false,
-                    isNotBlank(contentTypeHeader) ? mediaType : null
+                    mediaType
                 );
             } else {
-                return new BinaryBody(bodyBytes, mediaType);
+                return new BinaryBody(bodyBytes, isNotBlank(contentTypeHeader) ? mediaType : null);
             }
         }
         return null;

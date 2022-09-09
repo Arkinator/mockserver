@@ -18,6 +18,7 @@ import static org.mockserver.character.Character.NEW_LINE;
 import static org.mockserver.model.JsonBody.json;
 import static org.mockserver.model.NottableString.not;
 import static org.mockserver.model.RegexBody.regex;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 import static org.mockserver.model.StringBody.exact;
 
 public class BodyDTODeserializerTest {
@@ -715,7 +716,7 @@ public class BodyDTODeserializerTest {
         assertEquals(new ExpectationDTO()
             .setHttpRequest(
                 new HttpRequestDTO()
-                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, null)))
+                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, DEFAULT_CONTENT_TYPE)))
             ), expectationDTO);
     }
 
@@ -738,7 +739,7 @@ public class BodyDTODeserializerTest {
         assertEquals(new ExpectationDTO()
             .setHttpRequest(
                 new HttpRequestDTO()
-                    .setBody(new StringBodyDTO(new StringBody("some_value", null, false, null)))
+                    .setBody(new StringBodyDTO(new StringBody("some_value", null, false, DEFAULT_CONTENT_TYPE)))
             ), expectationDTO);
     }
 
@@ -808,7 +809,7 @@ public class BodyDTODeserializerTest {
         assertEquals(new ExpectationDTO()
             .setHttpRequest(
                 new HttpRequestDTO()
-                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, null)))
+                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, DEFAULT_CONTENT_TYPE)))
             ), expectationDTO);
     }
 
@@ -833,7 +834,7 @@ public class BodyDTODeserializerTest {
         assertEquals(new ExpectationDTO()
             .setHttpRequest(
                 new HttpRequestDTO()
-                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, null), true))
+                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, DEFAULT_CONTENT_TYPE), true))
             ), expectationDTO);
     }
 
@@ -858,7 +859,7 @@ public class BodyDTODeserializerTest {
         assertEquals(new ExpectationDTO()
             .setHttpRequest(
                 new HttpRequestDTO()
-                    .setBody(new StringBodyDTO((StringBody) new StringBody("some_value", null, true, null).withOptional(true)))
+                    .setBody(new StringBodyDTO((StringBody) new StringBody("some_value", null, true, DEFAULT_CONTENT_TYPE).withOptional(true)))
             ), expectationDTO);
     }
 
@@ -882,7 +883,7 @@ public class BodyDTODeserializerTest {
         assertEquals(new ExpectationDTO()
             .setHttpRequest(
                 new HttpRequestDTO()
-                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, null)))
+                    .setBody(new StringBodyDTO(new StringBody("some_value", null, true, DEFAULT_CONTENT_TYPE)))
             ), expectationDTO);
     }
 

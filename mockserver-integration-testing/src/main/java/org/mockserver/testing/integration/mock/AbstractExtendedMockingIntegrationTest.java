@@ -65,8 +65,7 @@ import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.Parameter.schemaParam;
 import static org.mockserver.model.ParameterBody.params;
 import static org.mockserver.model.RegexBody.regex;
-import static org.mockserver.model.StringBody.exact;
-import static org.mockserver.model.StringBody.subString;
+import static org.mockserver.model.StringBody.*;
 import static org.mockserver.model.XPathBody.xpath;
 import static org.mockserver.model.XmlBody.xml;
 import static org.mockserver.model.XmlSchemaBody.xmlSchema;
@@ -4099,6 +4098,7 @@ public abstract class AbstractExtendedMockingIntegrationTest extends AbstractBas
             response()
                 .withStatusCode(OK_200.code())
                 .withReasonPhrase(OK_200.reasonPhrase())
+                .withContentType(DEFAULT_CONTENT_TYPE)
                 .withBody("some_body"),
             makeRequest(
                 request()

@@ -20,7 +20,7 @@ public class StringBodySerializerTest {
     public void shouldSerializeStringBody() throws JsonProcessingException {
         assertThat(ObjectMapperFactory.createObjectMapper().writeValueAsString(new StringBody("string_body")),
                 is("\"string_body\""));
-        assertThat(ObjectMapperFactory.createObjectMapper().writeValueAsString(new StringBody("string_body", null, false, null)),
+        assertThat(ObjectMapperFactory.createObjectMapper().writeValueAsString(new StringBody("string_body", null, false, StringBody.DEFAULT_CONTENT_TYPE)),
             is("\"string_body\""));
     }
 

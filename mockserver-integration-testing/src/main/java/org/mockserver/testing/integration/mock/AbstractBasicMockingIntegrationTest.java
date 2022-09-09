@@ -17,6 +17,7 @@ import org.mockserver.uuid.UUIDService;
 import org.mockserver.verify.VerificationTimes;
 import org.slf4j.event.Level;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ import static org.mockserver.character.Character.NEW_LINE;
 import static org.mockserver.matchers.Times.*;
 import static org.mockserver.mock.Expectation.when;
 import static org.mockserver.mock.OpenAPIExpectation.openAPIExpectation;
+import static org.mockserver.model.BinaryBody.binary;
 import static org.mockserver.model.Cookie.cookie;
 import static org.mockserver.model.Cookie.schemaCookie;
 import static org.mockserver.model.Header.header;
@@ -52,6 +54,7 @@ import static org.mockserver.model.OpenAPIDefinition.openAPI;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.Parameter.schemaParam;
 import static org.mockserver.model.RegexBody.regex;
+import static org.mockserver.model.StringBody.DEFAULT_CONTENT_TYPE;
 import static org.mockserver.model.StringBody.exact;
 import static org.mockserver.model.XmlBody.xml;
 import static org.mockserver.validator.jsonschema.JsonSchemaValidator.OPEN_API_SPECIFICATION_URL;
@@ -306,7 +309,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 request()
                     .withMethod("POST")
                     .withPath(calculatePath("some_path"))
-                    .withBody("some_random_body"),
+                    .withBody(binary("some_random_body".getBytes(StandardCharsets.UTF_8))),
                 getHeadersToRemove()
             )
         );
@@ -470,11 +473,13 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withStatusCode(OK_200.code())
                 .withReasonPhrase(OK_200.reasonPhrase())
                 .withHeader("name", "value")
+                .withContentType(DEFAULT_CONTENT_TYPE)
                 .withBody("some_request_body"),
             makeRequest(
                 request()
                     .withPath(calculatePath("some_path"))
                     .withHeader("name", "value")
+                    .withContentType(DEFAULT_CONTENT_TYPE)
                     .withBody("some_request_body"),
                 getHeadersToRemove()
             )
@@ -582,6 +587,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
             response()
                 .withStatusCode(OK_200.code())
                 .withReasonPhrase(OK_200.reasonPhrase())
+                .withContentType(DEFAULT_CONTENT_TYPE)
                 .withBody("some_body1"),
             httpResponse
         );
@@ -2680,7 +2686,8 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withHeaders(
                     header("x-test", "test_headers_and_body")
                 )
-                .withBody("an_example_body_http"),
+                .withContentType(DEFAULT_CONTENT_TYPE)
+                .withBody(binary("an_example_body_http".getBytes(StandardCharsets.UTF_8))),
             httpResponse
         );
         assertThat(timeAfterRequest - timeBeforeRequest, greaterThanOrEqualTo(MILLISECONDS.toMillis(1900)));
@@ -2728,6 +2735,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withHeaders(
                     header("x-test", "test_headers_and_body")
                 )
+                .withContentType(DEFAULT_CONTENT_TYPE)
                 .withBody("some_overridden_body"),
             httpResponse
         );
@@ -2793,7 +2801,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withHeader("requestHeaderToReplace", "originalValue")
                 .withHeader("requestHeaderToRemove", "originalValue")
                 .withCookie("requestCookieToReplace", "replacedValue")
-                .withBody("an_example_body_http"),
+                .withBody(binary("an_example_body_http".getBytes(StandardCharsets.UTF_8))),
             getHeadersToRemove()
         );
 
@@ -2819,7 +2827,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withSocketAddress("localhost", insecureEchoServer.getPort(), SocketAddress.Scheme.HTTP)
                 .withLocalAddress("127.0.0.1:" + insecureEchoServer.getPort())
                 .withRemoteAddress("127.0.0.1")
-                .withBody("some_overridden_body")
+                .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8)))
         );
         assertEquals(
             response()
@@ -2836,7 +2844,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withCookie("cookieToAddTwo", "addedValue")
                 .withCookie("overrideCookieToReplace", "replacedValue")
                 .withCookie("requestCookieToReplace", "replacedValue")
-                .withBody("some_overridden_body"),
+                .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8))),
             httpResponse
         );
     }
@@ -2937,7 +2945,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withHeader("requestHeaderToRemove", "originalValue")
                 .withQueryStringParameter("requestParamToReplace", "originalValue")
                 .withQueryStringParameter("requestParamToRemove", "originalValue")
-                .withBody("an_example_body_http"),
+                .withBody(binary("an_example_body_http".getBytes(StandardCharsets.UTF_8))),
             getHeadersToRemove()
         );
 
@@ -2967,7 +2975,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withSocketAddress("localhost", insecureEchoServer.getPort(), SocketAddress.Scheme.HTTP)
                 .withLocalAddress("127.0.0.1:" + insecureEchoServer.getPort())
                 .withRemoteAddress("127.0.0.1")
-                .withBody("some_overridden_body")
+                .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8)))
         );
         assertEquals(
             response()
@@ -2987,7 +2995,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                 .withCookie("requestCookieToReplace", "responseReplacedValue")
                 .withCookie("responseCookieToAddOne", "addedValue")
                 .withCookie("responseCookieToAddTwo", "addedValue")
-                .withBody("some_overridden_body"),
+                .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8))),
             httpResponse
         );
     }
@@ -3010,7 +3018,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                             .withHeader("overrideHeaderToRemove", "originalValue")
                             .withCookie("overrideCookieToReplace", "replacedValue")
                             .withCookie("requestCookieToReplace", "replacedValue")
-                            .withBody("some_overridden_body")
+                            .withBody(binary("some_overridden_body".getBytes(StandardCharsets.UTF_8)))
                     )
                     .withRequestModifier(
                         requestModifier()
@@ -3182,6 +3190,7 @@ public abstract class AbstractBasicMockingIntegrationTest extends AbstractMockin
                     .withHeaders(
                         header("x-test", "test_headers_and_body")
                     )
+                    .withContentType(DEFAULT_CONTENT_TYPE)
                     .withBody("an_example_body_http"),
                 getHeadersToRemove()
             )

@@ -256,7 +256,7 @@ public class NettyHttpToMockServerHttpRequestDecoderTest {
 
         // then
         Body body = ((HttpRequest) output.get(0)).getBody();
-        assertThat(body, is(exact("A normal string with ASCII characters")));
+        assertThat(body, is(binary("A normal string with ASCII characters".getBytes(UTF_8), MediaType.parse(""))));
     }
 
     @Test

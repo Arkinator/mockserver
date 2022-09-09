@@ -285,7 +285,7 @@ public class MediaType extends ObjectWithJsonToString {
     }
 
     public boolean isString() {
-        return isBlank || contentTypeContains(new String[]{
+        return !isBlank & contentTypeContains(new String[]{
             "utf-8",
             "utf8",
             "text",

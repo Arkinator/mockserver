@@ -114,7 +114,7 @@ public class BodyDecoderEncoderTest {
     }
 
     @Test
-    public void shouldReadByteBufToStringBodyWithNoContentType() {
+    public void shouldReadByteBufToByteBodyWithNoContentType() {
         // given
         ByteBuf byteBuf = Unpooled.copiedBuffer("bytes".getBytes(DEFAULT_TEXT_HTTP_CHARACTER_SET));
 
@@ -122,7 +122,7 @@ public class BodyDecoderEncoderTest {
         BodyWithContentType result = new BodyDecoderEncoder().byteBufToBody(byteBuf, null);
 
         // then
-        assertThat(result, is(exact("bytes")));
+        assertThat(result, is(binary("bytes".getBytes(UTF_8), MediaType.parse(""))));
     }
 
     @Test

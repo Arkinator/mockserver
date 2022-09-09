@@ -81,7 +81,7 @@ public class BodyServletDecoderEncoderTest {
         BodyWithContentType result = new BodyServletDecoderEncoder(mockServerLogger).servletRequestToBody(servletRequest);
 
         // then
-        assertThat(result, is(exact("bytes")));
+        assertThat(result, is(binary("bytes".getBytes(UTF_8), MediaType.parse(""))));
     }
 
     @Test

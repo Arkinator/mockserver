@@ -28,6 +28,7 @@ import org.mockserver.logging.MockServerLogger;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpStatusCode;
+import org.mockserver.model.MediaType;
 import org.mockserver.scheduler.Scheduler;
 import org.mockserver.socket.tls.KeyStoreFactory;
 import org.mockserver.streams.IOStreamUtils;
@@ -133,6 +134,7 @@ public abstract class AbstractProxyIntegrationTest {
                 "Host: 127.0.0.1:" + getServerPort() + "\r" + NEW_LINE +
                 "x-test: test_headers_only\r" + NEW_LINE +
                 "Content-Length: 0\r" + NEW_LINE +
+                "Content-Type: text/plain; charset=UTF-8\r" + NEW_LINE +
                 "Connection: keep-alive\r" + NEW_LINE +
                 "\r" + NEW_LINE
             ).getBytes(StandardCharsets.UTF_8));
@@ -154,6 +156,7 @@ public abstract class AbstractProxyIntegrationTest {
                 "GET " + addContextToPath("test_headers_and_body") + " HTTP/1.1\r" + NEW_LINE +
                 "Host: 127.0.0.1:" + getServerPort() + "\r" + NEW_LINE +
                 "Content-Length: " + "an_example_body".getBytes(StandardCharsets.UTF_8).length + "\r" + NEW_LINE +
+                "Content-Type: text/plain; charset=UTF-8\r" + NEW_LINE +
                 "x-test: test_headers_and_body\r" + NEW_LINE +
                 "\r" + NEW_LINE +
                 "an_example_body"
@@ -946,6 +949,7 @@ public abstract class AbstractProxyIntegrationTest {
                 .withMethod("PUT")
                 .withHeader(HOST.toString(), "127.0.0.1:" + getProxyPort())
                 .withPath(addContextToPath("mockserver/clear"))
+                .withContentType(MediaType.JSON_UTF_8)
                 .withBody("{" + NEW_LINE +
                     "    \"path\" : 500," + NEW_LINE +
                     "    \"method\" : true," + NEW_LINE +
@@ -982,6 +986,7 @@ public abstract class AbstractProxyIntegrationTest {
                 .withMethod("PUT")
                 .withHeader(HOST.toString(), "127.0.0.1:" + getProxyPort())
                 .withPath(addContextToPath("mockserver/verify"))
+                .withContentType(MediaType.JSON_UTF_8)
                 .withBody("{" + NEW_LINE +
                     "    \"httpRequest\": {" + NEW_LINE +
                     "        \"path\": \"/simple\"" + NEW_LINE +
@@ -1017,6 +1022,7 @@ public abstract class AbstractProxyIntegrationTest {
                 .withMethod("PUT")
                 .withHeader(HOST.toString(), "127.0.0.1:" + getProxyPort())
                 .withPath(addContextToPath("mockserver/verifySequence"))
+                .withContentType(MediaType.JSON_UTF_8)
                 .withBody("{" + NEW_LINE +
                     "    \"httpRequest\": {" + NEW_LINE +
                     "        \"path\": false" + NEW_LINE +

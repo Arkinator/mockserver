@@ -1,6 +1,7 @@
 package org.mockserver.netty.integration.proxy.http;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -20,6 +21,7 @@ import org.mockserver.netty.MockServer;
 import org.mockserver.testing.integration.proxy.AbstractProxyIntegrationTest;
 import org.mockserver.uuid.UUIDService;
 
+import java.io.InputStreamReader;
 import java.net.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -359,4 +361,51 @@ public class NettyHttpProxyIntegrationTest extends AbstractProxyIntegrationTest 
         }
     }
 
+    @Test
+    public void shouldNotAlterBinaryBodyWithoutContentType() throws Exception {
+        viaWebSocket(() -> {
+            // given
+            getMockServerClient()
+                .when(
+                    request()
+                        .withPath(".*test_headers_and_body.*")
+                )
+                .forward(
+                    httpRequest ->
+                        httpRequest
+                            .withPath(".*test_headers_and_body.*")
+                            .withBody(binary(httpRequest.getBodyAsRawBytes()))
+                );
+
+            // and
+            HttpClient httpClient = createHttpClient();
+            byte[] hexBytes = RandomUtils.nextBytes(150);
+
+            // when
+            HttpPost request = new HttpPost(
+                new URIBuilder()
+                    .setScheme("http")
+                    .setHost("127.0.0.1")
+                    .setPort(getServerPort())
+                    .setPath(addContextToPath("test_headers_and_body"))
+                    .build()
+            );
+            request.setEntity(new ByteArrayEntity(hexBytes));
+            HttpResponse response = httpClient.execute(request);
+
+            byte[] responseBody = IOUtils.toByteArray(response.getEntity().getContent());
+            // then
+            assertEquals(HttpStatusCode.OK_200.code(), response.getStatusLine().getStatusCode());
+            assertEquals(Hex.encodeHexString(hexBytes), Hex.encodeHexString(responseBody));
+
+            // and
+            getMockServerClient().verify(
+                request()
+                    .withMethod("POST")
+                    .withPath("/test_headers_and_body")
+                    .withBody(hexBytes),
+                exactly(1)
+            );
+        });
+    }
 }

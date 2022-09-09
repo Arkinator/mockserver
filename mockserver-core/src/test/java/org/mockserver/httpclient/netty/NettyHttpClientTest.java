@@ -189,7 +189,7 @@ public class NettyHttpClientTest {
                 .withHeader(header("another_header_name", "first_header_value", "second_header_value"))
                 .withCookie(cookie("some_cookie_name", "some_cookie_value"))
                 .withCookie(cookie("another_cookie_name", "another_cookie_value"))
-                .withBody(exact("this is an example body"))
+                .withBody(binary("this is an example body".getBytes(UTF_8), MediaType.parse("")))
         ));
     }
 

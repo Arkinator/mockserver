@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.arkinator</groupId>
     <artifactId>mockserver</artifactId>
-    <version>5.14.2-SNAPSHOT</version>
+    <version>5.14.2</version>
     <packaging>pom</packaging>
 
     <name>MockServer</name>
@@ -27,7 +26,7 @@
         <url>https://github.com/arkinator/mockserver.git</url>
         <connection>scm:git:https://github.com/arkinator/mockserver.git</connection>
         <developerConnection>scm:git:git@github.com:arkinator/mockserver.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>mockserver-5.14.2</tag>
     </scm>
 
     <distributionManagement>
@@ -71,8 +70,8 @@
         <skipAssembly>false</skipAssembly>
         <deploy.plugin.respository.url>https://s01.oss.sonatype.org/content/repositories/snapshots/
         </deploy.plugin.respository.url>
-        <release.arguments/>
-        <javadoc.additional.parameters/>
+        <release.arguments />
+        <javadoc.additional.parameters />
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     </properties>
 
@@ -885,7 +884,7 @@
                 <version>3.1.0</version>
                 <configuration>
                     <rules>
-                        <dependencyConvergence/>
+                        <dependencyConvergence />
                     </rules>
                 </configuration>
                 <executions>
